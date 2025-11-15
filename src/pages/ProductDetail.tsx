@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, CheckCircle, Award, Package, ShoppingCart } from "lucide-react";
 import { products } from "@/data/products";
-import { useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 const ProductDetail = () => {
@@ -14,8 +14,23 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedSize, setSelectedSize] = useState<string>("");
+  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
-  const product = products.find((p) => p.id === id);
+  const product = useMemo(() => products.find((p) => p.id === id), [id]);
+
+  useEffect(() => {
+    setActiveIndex(0);
+    setLightboxOpen(false);
+  }, [id]);
+
+  const handleRequestQuote = useCallback(() => {
+    toast({
+      title: "Quote Request Submitted",
+      description: "Our team will contact you within 24 hours.",
+    });
+    setTimeout(() => navigate("/contact"), 1500);
+  }, [navigate, toast]);
 
   if (!product) {
     return (
@@ -34,16 +49,10 @@ const ProductDetail = () => {
     );
   }
 
-  const handleRequestQuote = () => {
-    const message = `Product: ${product.name} (${product.brand})${selectedSize ? `\nSize: ${selectedSize}` : ""}`;
-    toast({
-      title: "Quote Request Submitted",
-      description: "Our team will contact you within 24 hours.",
-    });
-    setTimeout(() => {
-      navigate("/contact");
-    }, 1500);
-  };
+  // Exactly 4 images; fill if fewer. All tiles are equal inside a square box.
+  const imagesBase = product.images && product.images.length > 0 ? product.images.slice(0, 4) : [product.image];
+  const images = [...imagesBase];
+  while (images.length < 4) images.push(images[0]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -59,29 +68,54 @@ const ProductDetail = () => {
           </Link>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            {/* Product Image */}
+            {/* Left: one square box with 4 equal tiles */}
             <div className="animate-fade-in">
-              <Card className="overflow-hidden border-border">
-                <div className="aspect-square relative bg-secondary">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-4 right-4 flex flex-col gap-2">
-                    <Badge className="bg-accent text-accent-foreground shadow-card">
-                      {product.category}
-                    </Badge>
-                    <Badge className="bg-primary text-primary-foreground shadow-card animate-pulse">
-                      <Award className="w-3 h-3 mr-1" />
-                      Authorized
-                    </Badge>
-                  </div>
+              <div
+                className="rounded-xl overflow-hidden shadow-lg bg-secondary p-2"
+                aria-label="Image grid"
+              >
+                <div className="grid grid-cols-2 gap-2 aspect-square">
+                  {images.map((img, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setActiveIndex(idx);
+                        setLightboxOpen(true);
+                      }}
+                      className="overflow-hidden rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      aria-label={`Thumbnail ${idx + 1}`}
+                    >
+                      <img
+                        src={img}
+                        alt={`${product.name} thumbnail ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    </button>
+                  ))}
                 </div>
-              </Card>
+              </div>
+
+              {/* Lightbox */}
+              {lightboxOpen && (
+                <div
+                  role="dialog"
+                  aria-modal="true"
+                  className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4"
+                  onClick={() => setLightboxOpen(false)}
+                >
+                  <img
+                    src={images[activeIndex]}
+                    alt={`${product.name} enlarged`}
+                    className="max-h-[85vh] max-w-[90vw] object-contain"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+              )}
             </div>
 
-            {/* Product Info */}
+            {/* Right: product info (unchanged) */}
             <div className="space-y-6 animate-fade-in" style={{ animationDelay: "100ms" }}>
               <div>
                 <div className="flex items-center gap-2 mb-2">
@@ -90,44 +124,39 @@ const ProductDetail = () => {
                   </Badge>
                   <span className="text-sm text-muted-foreground">Authorized Dealer</span>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                  {product.name}
-                </h1>
+
+                <h1 className="text-3xl md:text-4xl font-bold mb-4">{product.name}</h1>
+
                 <p className="text-lg text-muted-foreground mb-4">
                   {product.detailedDescription}
                 </p>
+
                 <div className="flex items-center gap-4">
-                  <div className="text-2xl font-bold text-primary">
-                    {product.priceRange}
+                  <div className="text-2xl font-bold text-primary">{product.priceRange}</div>
+                  <Badge variant="secondary" className="animate-pulse">48-Hour Delivery</Badge>
+                </div>
+              </div>
+
+              {product.sizeRanges && product.sizeRanges.length > 0 && (
+                <div>
+                  <label className="text-sm font-semibold mb-3 block">Available Sizes:</label>
+                  <div className="flex flex-wrap gap-2">
+                    {product.sizeRanges.map((size) => (
+                      <Button
+                        key={size}
+                        variant={selectedSize === size ? "default" : "outline"}
+                        onClick={() => setSelectedSize(size)}
+                        className={selectedSize === size ? "bg-gradient-primary" : ""}
+                      >
+                        {size}
+                      </Button>
+                    ))}
                   </div>
-                  <Badge variant="secondary" className="animate-pulse">
-                    48-Hour Delivery
-                  </Badge>
                 </div>
-              </div>
+              )}
 
-              {/* Size Selection */}
               <div>
-                <label className="text-sm font-semibold text-foreground mb-3 block">
-                  Available Sizes:
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {product.sizeRanges.map((size) => (
-                    <Button
-                      key={size}
-                      variant={selectedSize === size ? "default" : "outline"}
-                      onClick={() => setSelectedSize(size)}
-                      className={selectedSize === size ? "bg-gradient-primary" : ""}
-                    >
-                      {size}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Key Features */}
-              <div>
-                <h3 className="text-lg font-semibold text-foreground mb-3">Key Features:</h3>
+                <h3 className="text-lg font-semibold mb-3">Key Features:</h3>
                 <ul className="space-y-2">
                   {product.features.map((feature, index) => (
                     <li
@@ -135,23 +164,23 @@ const ProductDetail = () => {
                       className="flex items-start gap-2 animate-fade-in"
                       style={{ animationDelay: `${200 + index * 50}ms` }}
                     >
-                      <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                      <CheckCircle className="w-5 h-5 text-primary mt-0.5" />
                       <span className="text-muted-foreground">{feature}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Button
                   size="lg"
-                  className="flex-1 bg-gradient-primary hover:opacity-90 group"
+                  className="flex-1 bg-gradient-primary hover:opacity-90"
                   onClick={handleRequestQuote}
                 >
-                  <ShoppingCart className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
+                  <ShoppingCart className="mr-2 h-5 w-5" />
                   Request Quote
                 </Button>
+
                 <Link to="/contact" className="flex-1">
                   <Button size="lg" variant="outline" className="w-full">
                     Contact Sales
@@ -159,15 +188,14 @@ const ProductDetail = () => {
                 </Link>
               </div>
 
-              {/* Trust Badges */}
               <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border">
                 <div className="text-center">
                   <Award className="w-6 h-6 text-primary mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">Authorized Dealer</p>
+                  <p className="text-xs text-muted-foreground">Authorized</p>
                 </div>
                 <div className="text-center">
                   <Package className="w-6 h-6 text-primary mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">Genuine Products</p>
+                  <p className="text-xs text-muted-foreground">Genuine Product</p>
                 </div>
                 <div className="text-center">
                   <CheckCircle className="w-6 h-6 text-primary mx-auto mb-2" />
@@ -177,28 +205,20 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          {/* Specifications Table */}
-          <div className="mb-12 animate-fade-in" style={{ animationDelay: "200ms" }}>
-            <h2 className="text-2xl font-bold text-foreground mb-6">
-              Technical Specifications
-            </h2>
-            <Card className="border-border overflow-hidden">
+          {/* Specifications */}
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold mb-6">Technical Specifications</h2>
+            <Card className="border-border">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <tbody>
                     {product.specifications.map((spec, index) => (
                       <tr
                         key={index}
-                        className={`border-b border-border last:border-0 hover:bg-muted/50 transition-colors ${
-                          index % 2 === 0 ? "bg-muted/20" : ""
-                        }`}
+                        className={`border-b border-border last:border-0 ${index % 2 === 0 ? "bg-muted/20" : ""}`}
                       >
-                        <td className="py-4 px-6 font-semibold text-foreground w-1/3">
-                          {spec.label}
-                        </td>
-                        <td className="py-4 px-6 text-muted-foreground">
-                          {spec.value}
-                        </td>
+                        <td className="py-4 px-6 font-semibold w-1/3">{spec.label}</td>
+                        <td className="py-4 px-6 text-muted-foreground">{spec.value}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -207,40 +227,29 @@ const ProductDetail = () => {
             </Card>
           </div>
 
-          {/* Authorized Dealer Highlight */}
-          <div className="mb-12 animate-fade-in" style={{ animationDelay: "300ms" }}>
-            <Card className="bg-gradient-primary text-primary-foreground border-0 overflow-hidden relative">
-              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnoiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjEpIiBzdHJva2Utd2lkdGg9IjIiLz48L2c+PC9zdmc+')] opacity-20"></div>
-              <CardContent className="pt-8 pb-8 relative z-10">
-                <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-                  <div className="w-20 h-20 rounded-full bg-primary-foreground/20 flex items-center justify-center flex-shrink-0 animate-pulse">
-                    <Award className="w-10 h-10" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-2xl font-bold mb-2">
-                      Authorized Dealer of {product.brand}
-                    </h3>
-                    <p className="text-primary-foreground/90 mb-4">
-                      We are the official authorized distributor of {product.brand} products. 
-                      All products come with genuine manufacturer warranties and quality certifications. 
-                      Trust Percitech Sales Corporation for authentic industrial solutions.
-                    </p>
-                    <div className="flex flex-wrap gap-2 justify-center md:justify-start">
-                      <Badge variant="secondary" className="bg-primary-foreground/20 text-primary-foreground border-0">
-                        100% Genuine
-                      </Badge>
-                      <Badge variant="secondary" className="bg-primary-foreground/20 text-primary-foreground border-0">
-                        Manufacturer Warranty
-                      </Badge>
-                      <Badge variant="secondary" className="bg-primary-foreground/20 text-primary-foreground border-0">
-                        Quality Certified
-                      </Badge>
-                    </div>
+          {/* Authorized dealer strip */}
+          <Card className="bg-gradient-primary text-primary-foreground border-0 overflow-hidden mb-12">
+            <CardContent className="pt-8 pb-8 relative z-10">
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="w-20 h-20 rounded-full bg-primary-foreground/20 flex items-center justify-center animate-pulse">
+                  <Award className="w-10 h-10" />
+                </div>
+                <div className="flex-1 text-center md:text-left">
+                  <h3 className="text-2xl font-bold mb-2">
+                    Authorized Dealer of {product.brand}
+                  </h3>
+                  <p className="text-primary-foreground/90 mb-4">
+                    All products come with genuine manufacturer warranty and certification. Trust Percitech Sales Corporation for authentic industrial solutions.
+                  </p>
+                  <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+                    <Badge className="bg-primary-foreground/20 border-0">100% Genuine</Badge>
+                    <Badge className="bg-primary-foreground/20 border-0">Warranty Included</Badge>
+                    <Badge className="bg-primary-foreground/20 border-0">Quality Certified</Badge>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </main>
 
