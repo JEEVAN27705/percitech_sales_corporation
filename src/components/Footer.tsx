@@ -5,99 +5,111 @@ const Footer = () => {
   return (
     <footer className="bg-secondary border-t border-border">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+
+        {/* Top Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+
+          {/* Company Info */}
           <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="bg-gradient-primary text-primary-foreground font-bold text-xl px-3 py-1 rounded">
-                PSC
-              </div>
-              <span className="font-semibold text-foreground">
-                Percitech Sales
-              </span>
-            </div>
-            <p className="text-muted-foreground text-sm mb-4">
-              Trusted Industrial Abrasive & Pneumatic Solutions Provider
+            <h2 className="font-semibold text-lg text-foreground mb-3">
+              Percitech Sales Corporation
+            </h2>
+            <p className="text-muted-foreground text-sm mb-4 leading-relaxed">
+              Your Trusted Partner for Industrial Abrasives, Power Tools,
+              Pneumatic Solutions & Safety Products.
             </p>
-            <div className="flex space-x-3">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Facebook size={20} />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Twitter size={20} />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Linkedin size={20} />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Instagram size={20} />
-              </a>
+
+            {/* Social Icons */}
+            <div className="flex space-x-4">
+              {[Facebook, Twitter, Linkedin, Instagram].map((Icon, idx) => (
+                <a
+                  key={idx}
+                  href="#"
+                  className="text-muted-foreground hover:text-primary transition"
+                >
+                  <Icon size={20} />
+                </a>
+              ))}
             </div>
           </div>
 
+          {/* Quick Links */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/products" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Products
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Terms & Services
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-foreground mb-4">Our Brands</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>Apidor Industrial Products</li>
-              <li>Tyrolit Abrasives</li>
-              <li>Perfect Super Abrasive Tools</li>
-              <li>SMC Pneumatic Products</li>
-              <li>Janatics Pneumatic Products</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-foreground mb-4">Contact Info</h3>
+            <h3 className="font-semibold text-foreground mb-4 text-lg">Quick Links</h3>
             <ul className="space-y-3">
-              <li className="flex items-start space-x-2 text-sm text-muted-foreground">
-                <MapPin size={16} className="mt-1 flex-shrink-0" />
-                <span>Industrial Area, Business District</span>
-              </li>
-              <li className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <Phone size={16} className="flex-shrink-0" />
-                <span>+91 (XXX) XXX-XXXX</span>
-              </li>
-              <li className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <Mail size={16} className="flex-shrink-0" />
-                <span>info@percitechsales.com</span>
-              </li>
+              <li><Link to="/" className="footer-link">Home</Link></li>
+              <li><Link to="/about" className="footer-link">About Us</Link></li>
+              <li><Link to="/products" className="footer-link">Products</Link></li>
+              <li><Link to="/contact" className="footer-link">Contact Us</Link></li>
+              <li><Link to="/terms" className="footer-link">Terms & Services</Link></li>
             </ul>
           </div>
+
+          {/* Brands */}
+          <div>
+            <h3 className="font-semibold text-foreground mb-4 text-lg">Our Brands</h3>
+            <ul className="space-y-3 text-sm text-muted-foreground">
+              <li>Apidor Abrasives</li>
+              <li>Tyrolit Grinding Solutions</li>
+              <li>Perfect Tools</li>
+              <li>Chicago Pneumatic Tools</li>
+              <li>Janatics Pneumatics</li>
+              <li>Bosch Power Tools</li>
+              <li>3M Products</li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h3 className="font-semibold text-foreground mb-4 text-lg">Contact Info</h3>
+            <ul className="space-y-4 text-sm text-muted-foreground">
+
+              {/* GOOGLE MAPS LINK */}
+              <li className="flex items-start space-x-3">
+                <MapPin size={18} className="mt-0.5 text-primary" />
+                <a
+                  href="https://www.google.com/maps/place/MIDC+Sector+3,+Maharashtra"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary transition"
+                >
+                  Shop No. 12, Industrial Estate,<br />
+                  MIDC Area, Sector 3, Maharashtra
+                </a>
+              </li>
+
+              {/* CLICK TO CALL */}
+              <li className="flex items-center space-x-3">
+                <Phone size={18} className="text-primary" />
+                <a
+                  href="tel:+917276605175"
+                  className="hover:text-primary transition"
+                >
+                  +91 7276605175
+                </a>
+              </li>
+
+              {/* CLICK TO EMAIL */}
+              <li className="flex items-center space-x-3">
+                <Mail size={18} className="text-primary" />
+                <a
+                  href="mailto:info@percitechsales.com"
+                  className="hover:text-primary transition"
+                >
+                  info@percitechsales.com
+                </a>
+              </li>
+
+            </ul>
+          </div>
+
         </div>
 
-        <div className="border-t border-border mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Percitech Sales Corporation. All rights reserved.</p>
+        {/* Bottom */}
+        <div className="border-t border-border mt-10 pt-6 text-center text-xs text-muted-foreground">
+          <p>© {new Date().getFullYear()} Percitech Sales Corporation. All rights reserved.</p>
         </div>
+
       </div>
     </footer>
   );
