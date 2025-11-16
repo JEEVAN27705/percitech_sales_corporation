@@ -88,33 +88,61 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // YOUR REQUESTED ASYNC SUBMIT (wired to POST first, then show toasts and reset)
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (intent === "request_trial") {
-      toast({
-        title: "Message Sent!",
-        description:
-          "Your team will call you once again for confirmation for trial.",
+    const payload = {
+      ...formData,
+      intent,
+      slotDate,
+      slotTime,
+      trialDate,
+      trialTime,
+    };
+
+    try {
+      const res = await fetch("http://localhost:5000/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
-    } else if (intent === "schedule_call") {
+
+      if (!res.ok) throw new Error("Request failed");
+
+      // Keep your existing toast flows (no UI structure change)
+      if (intent === "request_trial") {
+        toast({
+          title: "Message Sent!",
+          description:
+            "Your team will call you once again for confirmation for trial.",
+        });
+      } else if (intent === "schedule_call") {
+        toast({
+          title: "Message Sent!",
+          description: "Our team will contact you soon for request call.",
+        });
+      } else {
+        toast({
+          title: "Message Sent!",
+          description: "We'll get back to you within 24 hours.",
+        });
+      }
+
+      setFormData({ name: "", email: "", phone: "", message: "" });
+      setIntent("");
+      setSlotDate("");
+      setSlotTime("");
+      setTrialDate("");
+      setTrialTime("");
+    } catch (err) {
+      // Use toast instead of alert to keep UX consistent
       toast({
-        title: "Message Sent!",
-        description: "Our team will contact you soon for request call.",
-      });
-    } else {
-      toast({
-        title: "Message Sent!",
-        description: "We'll get back to you within 24 hours.",
+        title: "Something went wrong.",
+        description: "Please try again or contact support.",
+        variant: "destructive",
       });
     }
-
-    setFormData({ name: "", email: "", phone: "", message: "" });
-    setIntent("");
-    setSlotDate("");
-    setSlotTime("");
-    setTrialDate("");
-    setTrialTime("");
   };
 
   const handleChange = (
@@ -310,8 +338,7 @@ const Contact = () => {
                             htmlFor="name"
                             className="text-sm font-semibold text-foreground flex items-center gap-2"
                           >
-                            Full Name{" "}
-                            <span className="text-destructive">*</span>
+                            Full Name <span className="text-destructive">*</span>
                           </label>
                           <Input
                             id="name"
@@ -329,8 +356,7 @@ const Contact = () => {
                             htmlFor="email"
                             className="text-sm font-semibold text-foreground flex items-center gap-2"
                           >
-                            Email Address{" "}
-                            <span className="text-destructive">*</span>
+                            Email Address <span className="text-destructive">*</span>
                           </label>
                           <Input
                             id="email"
@@ -508,8 +534,7 @@ const Contact = () => {
                           htmlFor="message"
                           className="text-sm font-semibold text-foreground flex items-center gap-2"
                         >
-                          Message{" "}
-                          <span className="text-destructive">*</span>
+                          Message <span className="text-destructive">*</span>
                         </label>
                         <Textarea
                           id="message"
@@ -522,11 +547,10 @@ const Contact = () => {
                           className="border-2 focus:border-primary transition-colors resize-none"
                         />
                         {!!intent && (
-                         <p className="text-xs text-muted-foreground">
-                          Note: Date and time will be auto-filled in the message if it’s empty. If the details 
-                          do not appear, kindly re-select your preferred slot.
-                         </p>
-
+                          <p className="text-xs text-muted-foreground">
+                            Note: Date and time will be auto-filled in the message if it’s empty. If the details
+                            do not appear, kindly re-select your preferred slot.
+                          </p>
                         )}
                       </div>
 
