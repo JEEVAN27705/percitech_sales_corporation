@@ -51,6 +51,11 @@ const About = () => {
                     has made us the <span className="font-bold text-primary">preferred choice</span> for industries seeking reliable industrial solutions.
                   </p>
 
+                  <p className="text-xs text-muted-foreground">
+                    Note: Date and time will be auto-filled in the message if it’s empty. 
+                    If the details do not appear, kindly re-select your preferred slot.
+                  </p>
+
                   <div className="pt-4">
                     <div className="flex items-center gap-3 mb-3">
                       <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0" />
@@ -67,7 +72,7 @@ const About = () => {
                   </div>
                 </div>
 
-                {/* RIGHT: Image matches left height and is pushed further right */}
+                {/* RIGHT: Image */}
                 <div className="relative animate-fade-in lg:pl-0" style={{ animationDelay: '0.2s' }}>
                   <div className="relative h-full translate-x-4 md:translate-x-6 lg:translate-x-10 xl:translate-x-12">
                     <div className="rounded-2xl overflow-hidden shadow-2xl border-4 border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-primary/20 h-full">
@@ -176,7 +181,7 @@ const About = () => {
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">Fast Delivery</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    48-hour shipping support
+                    Less than 48-hour shipping support
                   </p>
                 </CardContent>
               </Card>
@@ -200,7 +205,7 @@ const About = () => {
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">Wide Range</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    Huge product catalog
+                    Huge product catalog available
                   </p>
                 </CardContent>
               </Card>
@@ -212,7 +217,7 @@ const About = () => {
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">Expert Support</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    Dedicated technical assistance 
+                    Dedicated technical assistance 24*7 
                   </p>
                 </CardContent>
               </Card>
@@ -224,7 +229,7 @@ const About = () => {
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">Quality Assured</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">
-                    Strict quality checks
+                    Strict quality checks on all products
                   </p>
                 </CardContent>
               </Card>

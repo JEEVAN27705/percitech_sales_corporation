@@ -522,10 +522,11 @@ const Contact = () => {
                           className="border-2 focus:border-primary transition-colors resize-none"
                         />
                         {!!intent && (
-                          <p className="text-xs text-muted-foreground">
-                            Tip: Date and time are auto-added to the message only
-                            if it’s still empty.
-                          </p>
+                         <p className="text-xs text-muted-foreground">
+                          Note: Date and time will be auto-filled in the message if it’s empty. If the details 
+                          do not appear, kindly re-select your preferred slot.
+                         </p>
+
                         )}
                       </div>
 
