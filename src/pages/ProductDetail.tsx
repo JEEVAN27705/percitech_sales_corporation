@@ -14,6 +14,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [selectedSize, setSelectedSize] = useState<string>("");
+  const [selectedPrice, setSelectedPrice] = useState<number | null>(null); // ADDED
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
@@ -22,6 +23,8 @@ const ProductDetail = () => {
   useEffect(() => {
     setActiveIndex(0);
     setLightboxOpen(false);
+    setSelectedSize("");
+    setSelectedPrice(null); // reset price on product change
   }, [id]);
 
   const handleRequestQuote = useCallback(() => {
@@ -115,7 +118,7 @@ const ProductDetail = () => {
               )}
             </div>
 
-            {/* Right: product info (unchanged) */}
+            {/* Right: product info (unchanged structure) */}
             <div className="space-y-6 animate-fade-in" style={{ animationDelay: "100ms" }}>
               <div>
                 <div className="flex items-center gap-2 mb-2">
@@ -132,7 +135,9 @@ const ProductDetail = () => {
                 </p>
 
                 <div className="flex items-center gap-4">
-                  <div className="text-2xl font-bold text-primary">{product.priceRange}</div>
+                  <div className="text-2xl font-bold text-primary">
+                    {selectedPrice != null ? `₹${selectedPrice}` : product.priceRange}
+                  </div>
                   <Badge variant="secondary" className="animate-pulse">48-Hour Delivery</Badge>
                 </div>
               </div>
@@ -145,7 +150,11 @@ const ProductDetail = () => {
                       <Button
                         key={size}
                         variant={selectedSize === size ? "default" : "outline"}
-                        onClick={() => setSelectedSize(size)}
+                        onClick={() => {
+                          setSelectedSize(size);
+                          const price = product.sizePricing?.[size] ?? null;
+                          setSelectedPrice(price);
+                        }}
                         className={selectedSize === size ? "bg-gradient-primary" : ""}
                       >
                         {size}

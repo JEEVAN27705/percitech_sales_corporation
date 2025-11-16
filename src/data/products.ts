@@ -5,20 +5,16 @@ export interface Product {
   brand: string;
   description: string;
   detailedDescription: string;
-  image: string;       // legacy single image
-  images?: string[];   // exactly 4 images (equal size)
+  image: string;
   specifications: {
     label: string;
     value: string;
   }[];
   sizeRanges: string[];
   priceRange: string;
+  sizePricing: { [size: string]: number };
   features: string[];
 }
-
-// Helper: generate equal-size square images (makes thumbs uniform).
-const sq = (seed: string, size = 900) =>
-  `https://picsum.photos/seed/${encodeURIComponent(seed)}/${size}/${size}`;
 
 export const products: Product[] = [
   {
@@ -27,15 +23,8 @@ export const products: Product[] = [
     category: "Abrasives",
     brand: "Tyrolit",
     description: "High-performance cutting wheels for metal fabrication and industrial applications",
-    detailedDescription:
-      "Premium grade cutting wheels designed for heavy-duty industrial applications. Manufactured with superior abrasive materials for consistent performance and extended tool life. Ideal for cutting steel, stainless steel, and other ferrous metals.",
-    image: sq("tyrolit-cut-1"), // main can be any; gallery provides 4 equal squares
-    images: [
-      sq("tyrolit-cut-1"),
-      sq("tyrolit-cut-2"),
-      sq("tyrolit-cut-3"),
-      sq("tyrolit-cut-4"),
-    ],
+    detailedDescription: "Premium grade cutting wheels designed for heavy-duty industrial applications. Manufactured with superior abrasive materials for consistent performance and extended tool life. Ideal for cutting steel, stainless steel, and other ferrous metals.",
+    image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&h=800&fit=crop",
     specifications: [
       { label: "Material", value: "Aluminum Oxide" },
       { label: "Max RPM", value: "15,200" },
@@ -46,6 +35,14 @@ export const products: Product[] = [
     ],
     sizeRanges: ["100mm", "115mm", "125mm", "150mm", "180mm", "230mm"],
     priceRange: "₹45 - ₹280",
+    sizePricing: {
+      "100mm": 45,
+      "115mm": 65,
+      "125mm": 85,
+      "150mm": 140,
+      "180mm": 210,
+      "230mm": 280,
+    },
     features: [
       "High cutting speed and efficiency",
       "Minimal heat generation",
@@ -54,22 +51,14 @@ export const products: Product[] = [
       "Low vibration operation",
     ],
   },
-
   {
     id: "2",
     name: "Pneumatic Cylinder Double Acting",
     category: "Pneumatics",
     brand: "SMC",
     description: "Industrial-grade pneumatic cylinders with precise control and durability",
-    detailedDescription:
-      "Double-acting pneumatic cylinders engineered for precision and reliability in automated industrial systems. Features corrosion-resistant materials and precision-machined components for smooth operation and long service life.",
-    image: sq("smc-cylinder-1"),
-    images: [
-      sq("smc-cylinder-1"),
-      sq("smc-cylinder-2"),
-      sq("smc-cylinder-3"),
-      sq("smc-cylinder-4"),
-    ],
+    detailedDescription: "Double-acting pneumatic cylinders engineered for precision and reliability in automated industrial systems. Features corrosion-resistant materials and precision-machined components for smooth operation and long service life.",
+    image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&h=800&fit=crop",
     specifications: [
       { label: "Bore Size", value: "32mm - 100mm" },
       { label: "Stroke Length", value: "25mm - 500mm" },
@@ -80,6 +69,14 @@ export const products: Product[] = [
     ],
     sizeRanges: ["32mm", "40mm", "50mm", "63mm", "80mm", "100mm"],
     priceRange: "₹1,200 - ₹8,500",
+    sizePricing: {
+      "32mm": 1200,
+      "40mm": 2100,
+      "50mm": 3200,
+      "63mm": 4800,
+      "80mm": 6500,
+      "100mm": 8500,
+    },
     features: [
       "Double-acting design",
       "Adjustable cushioning",
@@ -88,22 +85,14 @@ export const products: Product[] = [
       "Easy maintenance",
     ],
   },
-
   {
     id: "3",
     name: "Grinding Disc Depressed Center",
     category: "Abrasives",
     brand: "Tyrolit",
     description: "Professional grinding discs for surface finishing and material removal",
-    detailedDescription:
-      "Depressed center grinding discs manufactured to the highest standards for aggressive material removal and surface preparation.",
-    image: sq("tyrolit-grind-1"),
-    images: [
-      sq("tyrolit-grind-1"),
-      sq("tyrolit-grind-2"),
-      sq("tyrolit-grind-3"),
-      sq("tyrolit-grind-4"),
-    ],
+    detailedDescription: "Depressed center grinding discs manufactured to the highest standards for aggressive material removal and surface preparation. Designed for angle grinders with excellent balance and minimal vibration.",
+    image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&h=800&fit=crop",
     specifications: [
       { label: "Abrasive Type", value: "Zirconia Alumina" },
       { label: "Max RPM", value: "13,300" },
@@ -114,6 +103,13 @@ export const products: Product[] = [
     ],
     sizeRanges: ["100mm", "115mm", "125mm", "150mm", "180mm"],
     priceRange: "₹55 - ₹350",
+    sizePricing: {
+      "100mm": 55,
+      "115mm": 85,
+      "125mm": 135,
+      "150mm": 220,
+      "180mm": 350,
+    },
     features: [
       "Fast stock removal",
       "Excellent durability",
@@ -122,22 +118,14 @@ export const products: Product[] = [
       "Multi-material compatible",
     ],
   },
-
   {
     id: "4",
     name: "Air Compressor Unit Portable",
     category: "Pneumatics",
     brand: "SMC",
     description: "Reliable air compression systems for industrial automation",
-    detailedDescription:
-      "Portable industrial air compressor designed for demanding applications. Features oil-free operation, low maintenance requirements, and consistent air delivery.",
-    image: sq("smc-compressor-1"),
-    images: [
-      sq("smc-compressor-1"),
-      sq("smc-compressor-2"),
-      sq("smc-compressor-3"),
-      sq("smc-compressor-4"),
-    ],
+    detailedDescription: "Portable industrial air compressor designed for demanding applications. Features oil-free operation, low maintenance requirements, and consistent air delivery for pneumatic tools and automation systems.",
+    image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&h=800&fit=crop",
     specifications: [
       { label: "Motor Power", value: "2.5 HP" },
       { label: "Tank Capacity", value: "50 Liters" },
@@ -148,6 +136,13 @@ export const products: Product[] = [
     ],
     sizeRanges: ["25L", "50L", "100L", "150L", "200L"],
     priceRange: "₹18,000 - ₹85,000",
+    sizePricing: {
+      "25L": 18000,
+      "50L": 32000,
+      "100L": 52000,
+      "150L": 68000,
+      "200L": 85000,
+    },
     features: [
       "Oil-free operation",
       "Thermal overload protection",
@@ -156,22 +151,14 @@ export const products: Product[] = [
       "Portable design with wheels",
     ],
   },
-
   {
     id: "5",
     name: "Diamond Cutting Disc Professional",
     category: "Cutting Tools",
     brand: "Perfect",
     description: "Professional diamond-tipped cutting discs for precision work",
-    detailedDescription:
-      "Super abrasive diamond cutting discs engineered for cutting hard materials including concrete, granite, marble, and ceramics.",
-    image: sq("perfect-diamond-1"),
-    images: [
-      sq("perfect-diamond-1"),
-      sq("perfect-diamond-2"),
-      sq("perfect-diamond-3"),
-      sq("perfect-diamond-4"),
-    ],
+    detailedDescription: "Super abrasive diamond cutting discs engineered for cutting hard materials including concrete, granite, marble, and ceramics. Features laser-welded segments for superior performance and safety.",
+    image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&h=800&fit=crop",
     specifications: [
       { label: "Diamond Grade", value: "Premium Industrial" },
       { label: "Segment Height", value: "10mm" },
@@ -182,6 +169,14 @@ export const products: Product[] = [
     ],
     sizeRanges: ["115mm", "125mm", "150mm", "180mm", "230mm", "300mm"],
     priceRange: "₹850 - ₹4,500",
+    sizePricing: {
+      "115mm": 850,
+      "125mm": 1200,
+      "150mm": 1800,
+      "180mm": 2600,
+      "230mm": 3500,
+      "300mm": 4500,
+    },
     features: [
       "Laser welded segments",
       "Fast cutting speed",
@@ -190,22 +185,14 @@ export const products: Product[] = [
       "Reduced dust generation",
     ],
   },
-
   {
     id: "6",
     name: "Polishing Pads Complete Set",
     category: "Polishing",
     brand: "Apidor",
     description: "Complete polishing pad set for various surface finishes",
-    detailedDescription:
-      "Professional grade polishing pads designed for achieving mirror finishes on metal, stone, and composite surfaces.",
-    image: sq("apidor-polish-1"),
-    images: [
-      sq("apidor-polish-1"),
-      sq("apidor-polish-2"),
-      sq("apidor-polish-3"),
-      sq("apidor-polish-4"),
-    ],
+    detailedDescription: "Professional grade polishing pads designed for achieving mirror finishes on metal, stone, and composite surfaces. Multi-stage polishing system from coarse to fine finishing.",
+    image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&h=800&fit=crop",
     specifications: [
       { label: "Pad Type", value: "Hook & Loop" },
       { label: "Backing Material", value: "Velcro" },
@@ -216,6 +203,12 @@ export const products: Product[] = [
     ],
     sizeRanges: ["100mm", "125mm", "150mm", "180mm"],
     priceRange: "₹180 - ₹650",
+    sizePricing: {
+      "100mm": 180,
+      "125mm": 320,
+      "150mm": 480,
+      "180mm": 650,
+    },
     features: [
       "Multi-stage polishing",
       "Heat resistant",
@@ -224,22 +217,14 @@ export const products: Product[] = [
       "Washable and reusable",
     ],
   },
-
   {
     id: "7",
     name: "Flap Disc Conical Type",
     category: "Abrasives",
     brand: "Tyrolit",
     description: "High-quality flap discs for metal finishing applications",
-    detailedDescription:
-      "Conical flap discs providing aggressive grinding action with a smooth finish.",
-    image: sq("tyrolit-flap-1"),
-    images: [
-      sq("tyrolit-flap-1"),
-      sq("tyrolit-flap-2"),
-      sq("tyrolit-flap-3"),
-      sq("tyrolit-flap-4"),
-    ],
+    detailedDescription: "Conical flap discs providing aggressive grinding action with a smooth finish. Ideal for weld blending, surface preparation, and contour work on various metals.",
+    image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&h=800&fit=crop",
     specifications: [
       { label: "Abrasive", value: "Zirconia" },
       { label: "Grit Range", value: "40 - 120" },
@@ -250,6 +235,13 @@ export const products: Product[] = [
     ],
     sizeRanges: ["100mm", "115mm", "125mm", "150mm", "180mm"],
     priceRange: "₹95 - ₹420",
+    sizePricing: {
+      "100mm": 95,
+      "115mm": 155,
+      "125mm": 225,
+      "150mm": 310,
+      "180mm": 420,
+    },
     features: [
       "Cool cutting action",
       "Long service life",
@@ -258,22 +250,14 @@ export const products: Product[] = [
       "Low vibration",
     ],
   },
-
   {
     id: "8",
     name: "Pneumatic Solenoid Valve 5/2 Way",
     category: "Pneumatics",
     brand: "Janatics",
     description: "Precision pneumatic valves for automated systems",
-    detailedDescription:
-      "5/2 way solenoid valve designed for controlling double-acting pneumatic cylinders.",
-    image: sq("janatics-valve-1"),
-    images: [
-      sq("janatics-valve-1"),
-      sq("janatics-valve-2"),
-      sq("janatics-valve-3"),
-      sq("janatics-valve-4"),
-    ],
+    detailedDescription: "5/2 way solenoid valve designed for controlling double-acting pneumatic cylinders. Features fast response time, low power consumption, and excellent reliability in automated systems.",
+    image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&h=800&fit=crop",
     specifications: [
       { label: "Port Size", value: "1/8\" to 1/2\"" },
       { label: "Voltage", value: "24V DC / 230V AC" },
@@ -284,6 +268,12 @@ export const products: Product[] = [
     ],
     sizeRanges: ["1/8\"", "1/4\"", "3/8\"", "1/2\""],
     priceRange: "₹1,800 - ₹6,500",
+    sizePricing: {
+      "1/8\"": 1800,
+      "1/4\"": 3200,
+      "3/8\"": 4800,
+      "1/2\"": 6500,
+    },
     features: [
       "Manual override option",
       "LED status indicator",
