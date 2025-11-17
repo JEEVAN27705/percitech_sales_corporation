@@ -102,14 +102,13 @@ const Contact = () => {
   };
 
   try {
-    const res = await fetch(
-      "https://percitech-sales-corporation-1.onrender.com/api/contact",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      }
-    );
+    const res = await fetch("/api/contact", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    }
+  );
+
 
     if (!res.ok) throw new Error("Failed to send message");
 
