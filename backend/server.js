@@ -7,7 +7,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Gmail (App Password required)
+// Root route so Render doesn't show "Cannot GET /"
+app.get("/", (req, res) => {
+  res.send("Backend is running successfully 🚀");
+});
+
+// Nodemailer transporter (requires App Password)
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -36,16 +41,19 @@ app.post("/api/contact", async (req, res) => {
     <p><b>Email:</b> ${email}</p>
     <p><b>Phone:</b> ${phone}</p>
     <p><b>Intent:</b> ${intent}</p>
+
     ${
       intent === "schedule_call"
         ? `<p><b>Call Date:</b> ${slotDate}</p><p><b>Call Time:</b> ${slotTime}</p>`
         : ""
     }
+
     ${
       intent === "request_trial"
         ? `<p><b>Trial Date:</b> ${trialDate}</p><p><b>Trial Time:</b> ${trialTime}</p>`
         : ""
     }
+
     <p><b>Message:</b></p>
     <p>${message}</p>
   `;
@@ -58,12 +66,15 @@ app.post("/api/contact", async (req, res) => {
       html,
     });
 
-    res.json({ success: true });
+    res.json({ success: true, message: "Email sent successfully!" });
   } catch (err) {
+    console.error("EMAIL ERROR →", err);
     res.status(500).json({ success: false, error: err.message });
   }
 });
 
 // Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
