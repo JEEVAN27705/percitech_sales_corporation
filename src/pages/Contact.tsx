@@ -89,61 +89,50 @@ const Contact = () => {
   };
 
   // YOUR REQUESTED ASYNC SUBMIT (wired to POST first, then show toasts and reset)
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+ const handleSubmit = async (e: any) => {
+  e.preventDefault();
 
-    const payload = {
-      ...formData,
-      intent,
-      slotDate,
-      slotTime,
-      trialDate,
-      trialTime,
-    };
+  const payload = {
+    ...formData,
+    intent,
+    slotDate,
+    slotTime,
+    trialDate,
+    trialTime,
+  };
 
-    try {
-      const res = await fetch("http://localhost:5000/api/contact", {
+  try {
+    const res = await fetch(
+      "https://percitech-sales-corporation-1.onrender.com/api/contact",
+      {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) throw new Error("Request failed");
-
-      // Keep your existing toast flows (no UI structure change)
-      if (intent === "request_trial") {
-        toast({
-          title: "Message Sent!",
-          description:
-            "Your team will call you once again for confirmation for trial.",
-        });
-      } else if (intent === "schedule_call") {
-        toast({
-          title: "Message Sent!",
-          description: "Our team will contact you soon for request call.",
-        });
-      } else {
-        toast({
-          title: "Message Sent!",
-          description: "We'll get back to you within 24 hours.",
-        });
       }
+    );
 
-      setFormData({ name: "", email: "", phone: "", message: "" });
-      setIntent("");
-      setSlotDate("");
-      setSlotTime("");
-      setTrialDate("");
-      setTrialTime("");
-    } catch (err) {
-      // Use toast instead of alert to keep UX consistent
-      toast({
-        title: "Something went wrong.",
-        description: "Please try again or contact support.",
-        variant: "destructive",
-      });
-    }
-  };
+    if (!res.ok) throw new Error("Failed to send message");
+
+    toast({
+      title: "Message Sent!",
+      description: "We will get back to you shortly.",
+    });
+
+    setFormData({ name: "", email: "", phone: "", message: "" });
+    setIntent("");
+    setSlotDate("");
+    setSlotTime("");
+    setTrialDate("");
+    setTrialTime("");
+  } catch (err) {
+    toast({
+      title: "Error",
+      description: "Message sending failed. Try again.",
+      variant: "destructive",
+    });
+  }
+};
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
